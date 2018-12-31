@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>gRPC-Swagger</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/mobi.css/dist/mobi.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/mobi-plugin-color/dist/mobi-plugin-color.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/mobi-plugin-form/dist/mobi-plugin-form.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/mobi-plugin-flexbox/dist/mobi-plugin-flexbox.min.css"/>
+    <link href="https://cdn.bootcss.com/jsoneditor/5.26.3/jsoneditor.min.css" rel="stylesheet">
+
+    <style type="text/css">
+        h2 {
+            border-bottom: 1px solid #EFEAEA;
+            padding-bottom: 10px;
+        }
+
+        input[type="text"] {
+            font-size: 1.5em;
+            height: 2.5em;
+        }
+
+        #services-display {
+            width: 100%;
+            max-height: 500px;
+        }
+
+        div.jsoneditor-tree div.jsoneditor-tree-inner {
+            padding-bottom: 1em;
+        }
+
+        td {
+            font-size: 1.3em;
+            line-height: 1.3em;
+        }
+
+        #container table {
+            margin: 0.1em 0;
+        }
+
+        div.jsoneditor-tree button.jsoneditor-collapsed,
+        div.jsoneditor-tree button.jsoneditor-expanded {
+            margin-top: 0.3em;
+        }
+
+        div.jsoneditor-field,
+        div.jsoneditor-readonly,
+        div.jsoneditor td.jsoneditor-separator,
+        div.jsoneditor-value.jsoneditor-string,
+        div.jsoneditor-value.jsoneditor-object,
+        div.jsoneditor-value.jsoneditor-array,
+        div.jsoneditor-value.jsoneditor-number,
+        div.jsoneditor-value.jsoneditor-boolean,
+        div.jsoneditor-value.jsoneditor-null,
+        div.jsoneditor-value.jsoneditor-invalid {
+            font-size: 1.3em;
+            line-height: 1.3em;
+        }
+
+        .hide {
+            visibility: hidden;
+        }
+
+    </style>
+</head>
+<body>
+<div class="flex-center">
+    <div class="container" id="container">
+        <article class="site-article unit-1-on-mobile">
+            <h2>Server base url</h2>
+            <div class="form">
+                <div class="flex-left units-gap">
+                    <div class="unit"><input type="text" placeholder="server base url" id="server-base-url"
+                                             value="http://localhost:8080"></div>
+                </div>
+            </div>
+
+            <h2>Service Discovery</h2>
+            <div class="form">
+                <div class="flex-left units-gap">
+                    <div class="unit"><input type="text" placeholder="host:port" id="endpoint" value="localhost:12347"></div>
+                </div>
+                <div class="flex-left units-gap">
+                    <div class="unit"><input type="text" placeholder="group name (optional)" id="group-name"></div>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary" id="register">Submit</button>
+                </div>
+            </div>
+            <h2>Service List</h2>
+            <div class="form">
+                <div>
+                    <button type="submit" class="btn btn-primary" id="list">List</button>
+                </div>
+            </div>
+            <h2>Run results</h2>
+            <div class="flex-left units-gap hide" id = "services-display-wrapper">
+                <pre id="services-display"></pre>
+            </div>
+        </article>
+    </div>
+</div>
+
+<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.bootcss.com/jsoneditor/5.26.3/jsoneditor.min.js"></script>
+<script type="text/javascript">
+    var registerPath = "/register";
+    var listPath = "/listServices";
+    var baseUrlKey = "baseUrl";
+    var endpointKey = "endpoint";
+    var groupNameKey = "groupName";
+
+    var container = document.getElementById('services-display');
+    var options = {
+        mode: 'view'
+    };
+    var editor = new JSONEditor(container, options);
+    var serverBaseUrl, endpoint, groupName;
+    $("#register").onclick(function () {
+        serverBaseUrl = $("#server-base-url").val();
+        endpoint = $("#endpoint").val();
+        if (isBlank(serverBaseUrl)) {
+            alert("Server url can't be empty!");
+            return;
+        }
+        if (isBlank(endpoint)) {
+            alert("Endpoint can't be empty!");
+            return;
+        }
+        var texts = endpoint.split(":");
+        if (texts.length !== 2) {
+            alert("Please check endpoint format!");
+            return;
+        }
+        localStorage.setItem(baseUrlKey, serverBaseUrl);
+        localStorage.setItem(endpointKey, endpoint);
+        var data = "host=" + texts[0] + "&port=" + texts[1];
+        groupName = $("#group-name").val();
+        if (!isBlank(groupName)) {
+            data += "&groupName=" + groupName;
+            localStorage.setItem(groupNameKey, groupName);
+        }
+        $.ajax({
+            url: serverBaseUrl + registerPath,
+            type: "POST",
+            data: data,
+            success: function(e) {
+                console.log(e);
+                $("#services-display-wrapper").css("visibility", "visible");
+                editor.set(e.data);
+            },
+            error: function (e) {
+                console.error(e);
+                $("#services-display-wrapper").css("visibility", "hidden");
+                alert("Register failed!")
+            }
+        });
+    });
+
+    $("#list").onclick(function () {
+        serverBaseUrl = $("#server-base-url").val();
+        localStorage.setItem(baseUrlKey, serverBaseUrl);
+        $.ajax({
+            url: serverBaseUrl + listPath,
+            type: "POST",
+            success: function(e) {
+                console.log(e);
+                $("#services-display-wrapper").css("visibility", "visible");
+                editor.set(e.data);
+            },
+            error: function(e) {
+                console.log(e);
+                $("#services-display-wrapper").css("visibility", "hidden");
+                alert("List services failed!")
+            }
+        })
+    });
+
+    $(document).ready(function() {
+        serverBaseUrl = localStorage.getItem(baseUrlKey);
+        endpoint = localStorage.getItem(endpointKey);
+        groupName = localStorage.getItem(groupNameKey);
+        if (!isBlank(serverBaseUrl)) {
+            $("#server-base-url").val(serverBaseUrl);
+        }
+        if (!isBlank(endpoint)) {
+            $("#endpoint").val(endpoint);
+        }
+        if (!isBlank(groupName)) {
+            $("#group-name").val(groupName);
+        }
+    });
+
+    function isBlank(text) {
+        return $.trim(text) === '';
+    }
+</script>
+</body>
+</html>
