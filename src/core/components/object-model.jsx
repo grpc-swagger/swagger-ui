@@ -91,7 +91,7 @@ export default class ObjectModel extends Component {
                     ([key, value]) => {
                       let isDeprecated = isOAS3() && value.get("deprecated")
                       let isRequired = List.isList(requiredProperties) && requiredProperties.contains(key)
-                      let propertyStyle = { verticalAlign: "top", paddingRight: "0.2em" }
+                      let propertyStyle = { verticalAlign: "middle", paddingRight: "0.2em" }
                       if ( isRequired ) {
                         propertyStyle.fontWeight = "bold"
                       }

@@ -59,6 +59,8 @@
     "ieee754": "^1.1.8",
     "immutable": "^3.x.x",
     "js-file-download": "^0.4.1",
+    "jsoneditor": "^5.26.3",
+    "jsoneditor-react": "^1.0.0",
     "lodash": "^4.17.10",
     "memoizee": "^0.4.12",
     "prop-types": "^15.5.10",
@@ -77,6 +79,7 @@
     "reselect": "^2.5.4",
     "serialize-error": "^2.1.0",
     "swagger-client": "^3.8.22",
+    "swagger-ui-themes": "^3.0.0",
     "url-parse": "^1.1.8",
     "xml-but-prettier": "^1.0.1",
     "zenscroll": "^4.0.2"

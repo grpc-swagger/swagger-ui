@@ -349,13 +349,13 @@ export function extractFileNameFromContentDispositionHeader(value){
     /filename="([^;]*);?"/i,
     /filename=([^;]*);?/i
   ]
-  
+
   let responseFilename
   patterns.some(regex => {
     responseFilename = regex.exec(value)
     return responseFilename !== null
   })
-    
+
   if (responseFilename !== null && responseFilename.length > 1) {
     try {
       return decodeURIComponent(responseFilename[1])
@@ -804,4 +804,8 @@ export function numberToString(thing) {
   }
 
   return thing
+}
+
+export function isBlank(text) {
+  return text === null || text.replace(/(^s*)|(s*$)/g, "").length === 0
 }

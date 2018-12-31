@@ -39,6 +39,7 @@ export default class Topbar extends React.Component {
 
   downloadUrl = (e) => {
     this.loadSpec(this.state.url)
+    localStorage.setItem("urlCache", this.state.url)
     e.preventDefault()
   }
 
@@ -54,7 +55,6 @@ export default class Topbar extends React.Component {
   setSelectedUrl = (selectedUrl) => {
     const configs = this.props.getConfigs()
     const urls = configs.urls || []
-
     if(urls && urls.length) {
       if(selectedUrl)
       {
@@ -72,7 +72,6 @@ export default class Topbar extends React.Component {
   componentDidMount() {
     const configs = this.props.getConfigs()
     const urls = configs.urls || []
-
     if(urls && urls.length) {
       var targetIndex = this.state.selectedIndex
       let primaryName = configs["urls.primaryName"]
@@ -111,7 +110,6 @@ export default class Topbar extends React.Component {
     const { urls } = getConfigs()
     let control = []
     let formOnSubmit = null
-
     if(urls) {
       let rows = []
       urls.forEach((link, i) => {

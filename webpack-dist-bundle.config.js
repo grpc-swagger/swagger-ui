@@ -1,5 +1,7 @@
 const path = require("path")
-const styleRules = require("./webpack.dist-style.config.js")
+require("./webpack.dist-style.config.js")
+require("css-loader");
+
 
 let rules = [
   { test: /\.(worker\.js)(\?.*)?$/,
@@ -12,7 +14,12 @@ let rules = [
         }
       },
       { loader: "babel-loader?retainLines=true" }
+
     ]
+  },
+  {
+    test: /\.css$/,
+    use: [ "style-loader", "css-loader" ]
   }
 ]
 

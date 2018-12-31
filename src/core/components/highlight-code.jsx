@@ -1,7 +1,8 @@
-import React, { Component } from "react"
+import React, {Component} from "react"
 import PropTypes from "prop-types"
-import { highlight } from "core/utils"
 import saveAs from "js-file-download"
+import {JsonEditor as Editor} from "jsoneditor-react"
+import "jsoneditor-react/es/editor.min.css"
 
 export default class HighlightCode extends Component {
   static propTypes = {
@@ -12,11 +13,9 @@ export default class HighlightCode extends Component {
   }
 
   componentDidMount() {
-    highlight(this.el)
   }
 
   componentDidUpdate() {
-    highlight(this.el)
   }
 
   initializeComponent = (c) => {
@@ -46,23 +45,35 @@ export default class HighlightCode extends Component {
     }
   }
 
-  render () {
-    let { value, className, downloadable } = this.props
+  render() {
+    let {value, className, downloadable} = this.props
     className = className || ""
-
-    return (
-      <div className="highlight-code">
-        { !downloadable ? null :
-          <div className="download-contents" onClick={this.downloadText}>
-            Download
-          </div>
-        }
+    let codeComponent
+    if (value.startsWith("<")) {
+      codeComponent =
         <pre
           ref={this.initializeComponent}
           onWheel={this.preventYScrollingBeyondElement}
           className={className + " microlight"}>
           {value}
         </pre>
+    } else {
+      let valueObj = JSON.parse(value)
+      codeComponent =
+        <Editor
+          ref={this.initializeComponent}
+          value={valueObj}
+          mode='view'
+        />
+    }
+    return (
+      <div className="highlight-code">
+        {!downloadable ? null :
+          <div className="download-contents" onClick={this.downloadText}>
+            Download
+          </div>
+        }
+        { codeComponent }
       </div>
     )
   }

@@ -5,7 +5,7 @@ import win from "core/window"
 import ApisPreset from "core/presets/apis"
 
 import * as AllPlugins from "core/plugins/all"
-import { parseSearch } from "core/utils"
+import { parseSearch, isBlank } from "core/utils"
 
 if (process.env.NODE_ENV !== "production" && typeof window !== "undefined") {
   win.Perf = require("react-addons-perf")
@@ -141,14 +141,17 @@ module.exports = function SwaggerUI(opts) {
     }
 
     store.setConfigs(mergedConfig)
-    system.configsActions.loaded()
 
+    system.configsActions.loaded()
     if (fetchedConfig !== null) {
       if (!queryConfig.url && typeof mergedConfig.spec === "object" && Object.keys(mergedConfig.spec).length) {
         system.specActions.updateUrl("")
         system.specActions.updateLoadingStatus("success")
         system.specActions.updateSpec(JSON.stringify(mergedConfig.spec))
       } else if (system.specActions.download && mergedConfig.url) {
+        if (!isBlank(localStorage.getItem("urlCache"))) {
+          mergedConfig.url = localStorage.getItem("urlCache")
+        }
         system.specActions.updateUrl(mergedConfig.url)
         system.specActions.download(mergedConfig.url)
       }

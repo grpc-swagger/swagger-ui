@@ -1,0 +1,56 @@
+div.jsoneditor-tree div.jsoneditor-tree-inner {
+  padding-bottom: 1em;
+}
+
+.highlight-code {
+  table {
+    margin: 0;
+    padding: 0;
+    tbody {
+      tr{
+        line-height: 1.2em;
+        margin: 0;
+        padding: 0;
+        td {
+          padding: 0;
+          line-height: 1.2em;
+          &:first-of-type {
+            padding: 0;
+            min-width: auto;
+            margin: 0.5em;
+          }
+        }
+      }
+    }
+  };
+
+  div.jsoneditor-tree button.jsoneditor-collapsed,
+  div.jsoneditor-tree button.jsoneditor-expanded {
+    padding: 0;
+    margin: 0.2em 0 0;
+  }
+
+  div.jsoneditor-field,
+  div.jsoneditor-readonly,
+  div.jsoneditor td.jsoneditor-separator,
+  div.jsoneditor-value.jsoneditor-string,
+  div.jsoneditor-value.jsoneditor-object,
+  div.jsoneditor-value.jsoneditor-array,
+  div.jsoneditor-value.jsoneditor-number,
+  div.jsoneditor-value.jsoneditor-boolean,
+  div.jsoneditor-value.jsoneditor-null,
+  div.jsoneditor-value.jsoneditor-invalid {
+    font-size: 1.2em;
+    line-height: 1.2em;
+    margin: 0.1em;
+    padding: 0.1em;
+  }
+
+  div.jsoneditor td.jsoneditor-separator{
+    padding-top: 0.2em;
+  }
+}
+
+
+
+
