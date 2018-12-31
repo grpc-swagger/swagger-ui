@@ -1,3 +1,9 @@
+## Change
+We have make changes based on the original repository:
+* add [json-editor](https://github.com/josdejong/jsoneditor) support for request and response json.
+* add localStorage for current url.
+* make some changes on css styles.
+
 # <img src="https://raw.githubusercontent.com/swagger-api/swagger.io/wordpress/images/assets/SWU-logo-clr.png" height="80">
 
 [![NPM version](https://badge.fury.io/js/swagger-ui.svg)](http://badge.fury.io/js/swagger-ui)
