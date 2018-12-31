@@ -121,7 +121,7 @@
     };
     var editor = new JSONEditor(container, options);
     var serverBaseUrl, endpoint, groupName;
-    $("#register").onclick(function () {
+    $("#register").click(function () {
         serverBaseUrl = $("#server-base-url").val();
         endpoint = $("#endpoint").val();
         if (isBlank(serverBaseUrl)) {
@@ -162,7 +162,7 @@
         });
     });
 
-    $("#list").onclick(function () {
+    $("#list").click(function () {
         serverBaseUrl = $("#server-base-url").val();
         localStorage.setItem(baseUrlKey, serverBaseUrl);
         $.ajax({
