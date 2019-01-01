@@ -1672,3 +1672,7 @@
 .swagger-ui .model-title table tbody tr td {
   padding: 0.5em 0 0;
 }
+
+.swagger-ui .download-contents {
+  z-index: 999;
+}
