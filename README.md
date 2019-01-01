@@ -4,6 +4,8 @@ We have make some changes based on the original repository:
 * add localStorage for current url.
 * make some changes on css styles.
 
+![](docs/images/demo.png)
+
 # <img src="https://raw.githubusercontent.com/swagger-api/swagger.io/wordpress/images/assets/SWU-logo-clr.png" height="80">
 
 [![NPM version](https://badge.fury.io/js/swagger-ui.svg)](http://badge.fury.io/js/swagger-ui)
