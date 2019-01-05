@@ -116,9 +116,15 @@
 
     var container = document.getElementById('services-display');
     var options = {
-        mode: 'view'
+        mode: 'code',
+        ace: ace,
+        indentation: 4
     };
     var editor = new JSONEditor(container, options);
+    editor.aceEditor.setOptions({
+        maxLines: 100,
+        fontSize: 14
+    });
     var serverBaseUrl, endpoint, groupName;
     $("#register").click(function () {
         serverBaseUrl = $("#server-base-url").val();

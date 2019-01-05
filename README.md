@@ -1,6 +1,6 @@
 ## Change
 We have make some changes based on the original repository:
-* add [json-editor](https://github.com/josdejong/jsoneditor) support for request and response json.
+* add [json-editor](https://github.com/josdejong/jsoneditor) with [ace editor](https://github.com/thlorenz/brace) mode for the request and response json.
 * add localStorage for current url.
 * make some changes on css styles.
 

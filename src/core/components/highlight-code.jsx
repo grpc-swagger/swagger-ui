@@ -3,6 +3,9 @@ import PropTypes from "prop-types"
 import saveAs from "js-file-download"
 import {JsonEditor as Editor} from "jsoneditor-react"
 import "jsoneditor-react/es/editor.min.css"
+import ace from "brace"
+import "brace/mode/json"
+import "brace/theme/github"
 
 export default class HighlightCode extends Component {
   static propTypes = {
@@ -13,9 +16,17 @@ export default class HighlightCode extends Component {
   }
 
   componentDidMount() {
+    if (this.el.jsonEditor !== undefined) {
+      this.el.jsonEditor.aceEditor.setOptions({maxLines: 100})
+    }
   }
 
   componentDidUpdate() {
+    let {value} = this.props
+    if (!value.startsWith("<")) {
+      let valueObj = JSON.parse(value)
+      this.el.jsonEditor.set(valueObj)
+    }
   }
 
   initializeComponent = (c) => {
@@ -63,7 +74,10 @@ export default class HighlightCode extends Component {
         <Editor
           ref={this.initializeComponent}
           value={valueObj}
-          mode='view'
+          mode="code"
+          ace={ace}
+          theme="ace/theme/github"
+          indentation={4}
         />
     }
     return (
@@ -73,7 +87,7 @@ export default class HighlightCode extends Component {
             Download
           </div>
         }
-        { codeComponent }
+        {codeComponent}
       </div>
     )
   }
