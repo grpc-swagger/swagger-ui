@@ -149,9 +149,13 @@ module.exports = function SwaggerUI(opts) {
         system.specActions.updateLoadingStatus("success")
         system.specActions.updateSpec(JSON.stringify(mergedConfig.spec))
       } else if (system.specActions.download && mergedConfig.url) {
+        if (queryConfig.url) {
+          localStorage.setItem("urlCache", queryConfig.url)
+        }
         if (!isBlank(localStorage.getItem("urlCache"))) {
           mergedConfig.url = localStorage.getItem("urlCache")
         }
+
         system.specActions.updateUrl(mergedConfig.url)
         system.specActions.download(mergedConfig.url)
       }
