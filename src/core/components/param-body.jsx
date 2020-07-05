@@ -1,7 +1,12 @@
 import React, { PureComponent } from "react"
 import PropTypes from "prop-types"
-import { fromJS, List } from "immutable"
+import { fromJS } from "immutable"
 import { getSampleSchema } from "core/utils"
+import {JsonEditor as Editor} from "jsoneditor-react"
+import "jsoneditor-react/es/editor.min.css"
+import ace from "brace"
+import "brace/mode/json"
+import "brace/theme/github"
 
 const NOOP = Function.prototype
 
@@ -41,54 +46,58 @@ export default class ParamBody extends PureComponent {
     this.updateValues.call(this, this.props)
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.updateValues.call(this, nextProps)
-  }
-
-  updateValues = (props) => {
-    let { param, isExecute, consumesValue="" } = props
-    let isXml = /xml/i.test(consumesValue)
-    let isJson = /json/i.test(consumesValue)
-    let paramValue = isXml ? param.get("value_xml") : param.get("value")
-
-    if ( paramValue !== undefined ) {
-      let val = !paramValue && isJson ? "{}" : paramValue
-      this.setState({ value: val })
-      this.onChange(val, {isXml: isXml, isEditBox: isExecute})
-    } else {
-      if (isXml) {
-        this.onChange(this.sample("xml"), {isXml: isXml, isEditBox: isExecute})
-      } else {
-        this.onChange(this.sample(), {isEditBox: isExecute})
-      }
+  componentDidUpdate() {
+    if (this.editor != null) {
+      this.editor.jsonEditor.aceEditor.setOptions({maxLines: 100})
     }
   }
 
-  sample = (xml) => {
+  componentWillReceiveProps(nextProps) {
+    this.updateValues.call(this, nextProps)
+
+  }
+
+  updateValues = (props) => {
+    let { param, isExecute } = props
+    let paramValue = param.get("value")
+
+    if ( paramValue !== undefined ) {
+      let val = !paramValue ? "{}" : paramValue
+      this.onChange(val, {isEditBox: isExecute})
+    } else {
+      this.onChange(this.sample(), {isEditBox: isExecute})
+    }
+  }
+
+  sample = () => {
     let { param, fn:{inferSchema} } = this.props
     let schema = inferSchema(param.toJS())
 
-    return getSampleSchema(schema, xml, {
+    return getSampleSchema(schema, false, {
       includeWriteOnly: true
     })
   }
 
-  onChange = (value, { isEditBox, isXml }) => {
+  onChange = (value, { isEditBox}) => {
     this.setState({value, isEditBox})
-    this._onChange(value, isXml)
+    this._onChange(value)
   }
 
-  _onChange = (val, isXml) => { (this.props.onChange || NOOP)(val, isXml) }
+  _onChange = (val) => { (this.props.onChange || NOOP)(val) }
+
+
+  initializeEditor = (c) => {
+    this.editor = c
+  }
 
   handleOnChange = e => {
-    const {consumesValue} = this.props
-    const isJson = /json/i.test(consumesValue)
-    const isXml = /xml/i.test(consumesValue)
-    const inputValue = isJson ? e.target.value.trim() : e.target.value
-    this.onChange(inputValue, {isXml})
+    const inputValue = JSON.stringify(e)
+    this.onChange(inputValue, {isXml: false, isEditBox: true})
   }
 
-  toggleIsEditBox = () => this.setState( state => ({isEditBox: !state.isEditBox}))
+  toggleIsEditBox = () => {
+    this.setState( state => ({isEditBox: !state.isEditBox}))
+  }
 
   render() {
     let {
@@ -102,22 +111,36 @@ export default class ParamBody extends PureComponent {
     } = this.props
 
     const Button = getComponent("Button")
-    const TextArea = getComponent("TextArea")
     const HighlightCode = getComponent("highlightCode")
     const ContentType = getComponent("contentType")
     // for domains where specSelectors not passed
-    let parameter = specSelectors ? specSelectors.parameterWithMetaByIdentity(pathMethod, param) : param
-    let errors = parameter.get("errors", List())
     let consumesValue = specSelectors.contentTypeValues(pathMethod).get("requestContentType")
     let consumes = this.props.consumes && this.props.consumes.size ? this.props.consumes : ParamBody.defaultProp.consumes
 
     let { value, isEditBox } = this.state
+    let valueObj
+    if (typeof value == "string" && value !== "") {
+      try {
+        valueObj = JSON.parse(value)
+      } catch (e) {
+        //
+      }
+    }
 
     return (
       <div className="body-param" data-param-name={param.get("name")} data-param-in={param.get("in")}>
         {
           isEditBox && isExecute
-            ? <TextArea className={ "body-param__text" + ( errors.count() ? " invalid" : "")} value={value} onChange={ this.handleOnChange }/>
+            ?
+            <Editor
+              mode="code"
+              ace={ace}
+              theme="ace/theme/github"
+              indentation={4}
+              value={valueObj}
+              onChange={this.handleOnChange}
+              ref={this.initializeEditor}
+            />
             : (value && <HighlightCode className="body-param__example"
                                value={ value }/>)
         }

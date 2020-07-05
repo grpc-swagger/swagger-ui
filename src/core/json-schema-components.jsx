@@ -5,6 +5,13 @@ import cx from "classnames"
 import ImPropTypes from "react-immutable-proptypes"
 import DebounceInput from "react-debounce-input"
 import { getSampleSchema } from "core/utils"
+
+import {JsonEditor as Editor} from "jsoneditor-react"
+import "jsoneditor-react/es/editor.min.css"
+import ace from "brace"
+import "brace/mode/json"
+import "brace/theme/github"
+
 //import "less/json-schema-form"
 
 const noop = ()=> {}
@@ -238,27 +245,34 @@ export class JsonSchema_object extends PureComponent {
   }
 
   handleOnChange = e => {
-    const inputValue = e.target.value
-
-    this.onChange(inputValue)
+    this.onChange(JSON.stringify(e))
   }
 
   render() {
     let {
-      getComponent,
-      value,
-      errors
+      value
     } = this.props
 
-    const TextArea = getComponent("TextArea")
+    let valueObj = {}
+    if(typeof value == "string" && value !== "") {
+      try {
+        valueObj = JSON.parse(value)
+      } catch (e) {
+        //
+      }
+    }
 
     return (
       <div>
-        <TextArea
-          className={cx({ invalid: errors.size })}
-          title={ errors.size ? errors.join(", ") : ""}
-          value={value}
-          onChange={ this.handleOnChange }/>
+        <Editor
+          ref = {this.initializeComponent}
+          mode="code"
+          ace={ace}
+          theme="ace/theme/github"
+          indentation={4}
+          value={valueObj}
+          onChange={this.handleOnChange}
+        />
       </div>
     )
 
