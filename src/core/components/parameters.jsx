@@ -28,7 +28,7 @@ export default class Parameters extends Component {
   static defaultProps = {
     onTryoutClick: Function.prototype,
     onCancelClick: Function.prototype,
-    tryItOutEnabled: false,
+    tryItOutEnabled: true,
     allowTryItOut: true,
     onChangeKey: [],
     specPath: [],
@@ -65,7 +65,7 @@ export default class Parameters extends Component {
       fn,
       getComponent,
       getConfigs,
-      specSelectors, 
+      specSelectors,
       specActions,
       pathMethod
     } = this.props

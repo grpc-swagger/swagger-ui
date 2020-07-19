@@ -12,18 +12,17 @@ export default class TryItOutButton extends React.Component {
   static defaultProps = {
     onTryoutClick: Function.prototype,
     onCancelClick: Function.prototype,
-    enabled: false,
+    enabled: true,
   };
 
   render() {
-    const { onTryoutClick, onCancelClick, enabled } = this.props
-
+    // const { onTryoutClick, onCancelClick, enabled } = this.props
     return (
       <div className="try-out">
-        {
+        {/*{
           enabled ? <button className="btn try-out__btn cancel" onClick={ onCancelClick }>Cancel</button>
                   : <button className="btn try-out__btn" onClick={ onTryoutClick }>Try it out </button>
-        }
+        }*/}
       </div>
     )
   }

@@ -10,7 +10,7 @@ export default class OperationContainer extends PureComponent {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      tryItOutEnabled: false,
+      tryItOutEnabled: true,
       executeInProgress: false
     }
   }
